@@ -83,6 +83,5 @@ def graphql_request(request):
     graphql_view = GraphQLView.as_view(schema=donor_schema)
     return graphql_view(request)
 
-
 def registration_view(request):
     return render(request, 'Donor_register.html')
