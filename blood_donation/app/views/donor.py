@@ -1,4 +1,8 @@
+from uuid import UUID
+
 import strawberry
+from django.utils.decorators import method_decorator
+from django.views.decorators.csrf import csrf_exempt
 from strawberry.django.views import GraphQLView
 from django.shortcuts import render
 from django.contrib.auth.models import User
@@ -8,14 +12,17 @@ from ..models.donor_model import DonorProfile
 
 @strawberry.type
 class UserType:
-    id: int
+    id: UUID
     username: str
     email: str
+    blood_type: str
 
 
+@csrf_exempt
 @strawberry.type
 class Mutation:
     @strawberry.mutation
+    @csrf_exempt
     def create_donor(self,
                      username: str, password: str, confirm_password: str,
                      email: str, name: str, mobile: str, blood_type: str,
@@ -25,10 +32,9 @@ class Mutation:
             raise Exception('Passwords do not match')
 
         hashed_password = make_password(password)
-        user = User.objects.create(username=username, password=hashed_password, email=email)
+        # user = User.objects.create(username=username, password=hashed_password, email=email)
 
         donor_profile = DonorProfile.objects.create(
-            user=user,
             username=username,
             password=hashed_password,
             Name=name,
@@ -41,11 +47,10 @@ class Mutation:
             address=address
         )
 
-        # Return the created user
         return UserType(
-            id=user.id,
-            username=user.username,
-            email=user.email
+            id=donor_profile.id,
+            username=donor_profile.username,
+            email=donor_profile.email
         )
 
 
@@ -54,14 +59,21 @@ class Query:
     @strawberry.field
     def user(self, username: str) -> UserType:
         try:
-            user = User.objects.get(username=username)
+            user = DonorProfile.objects.get(username=username)
             return UserType(
                 id=user.id,
                 username=user.username,
-                email=user.email
+                email=user.email,
+                blood_type=user.blood_type
             )
+
         except User.DoesNotExist:
-            return {"message": "Donor doesn't Exists"}
+            # Return a UserType instance with default or empty values
+            return UserType(
+                id=0,
+                username="",
+                email=""
+            )
 
 
 donor_schema = strawberry.Schema(query=Query, mutation=Mutation)

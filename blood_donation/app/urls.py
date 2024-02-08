@@ -6,4 +6,6 @@ from .views import admin,donor
 
 urlpatterns = [
     path('register/', donor.registration_view, name='register'),
+    path('graphql/', donor.graphql_request, name='graphql'),  # Add this line for GraphQL endpoint
+
 ]
