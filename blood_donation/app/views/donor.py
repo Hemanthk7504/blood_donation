@@ -53,7 +53,7 @@ class Donor_Mutation:
                 address=address
             )
 
-            send_activation_email(created=True,instance=donor_profile)
+            send_activation_email(created=True, instance=donor_profile)
 
             return UserType(
                 id=donor_profile.id,
@@ -100,8 +100,14 @@ def registration_view(request):
 
 
 @receiver(post_save, sender=DonorProfile)
-def send_activation_email( instance, created, **kwargs):
+def send_activation_email(instance, created, **kwargs):
     if created:
+        request = kwargs.get("request")
+        if not request:
+            # Log the error or handle it appropriately
+            print("Error: Request object is None")
+            return
+
         token = default_token_generator.make_token(instance)
         domain = '127.0.0.1:8000'  # Replace with your actual domain
         protocol = 'http'  # Replace with 'https' if you use SSL/TLS
@@ -129,21 +135,29 @@ def send_activation_email( instance, created, **kwargs):
 
         # Send the email
         email.send()
+        if request:
+            request.session['activation_token'] = token
 
 
 def activate(request, token):
     try:
-        # Decode the token to get the user
-        user = DonorProfile.objects.get(id=default_token_generator.check_token(Donor_Query, token))
-        # Activate the user account
+        # Verify the token
+        user = default_token_generator.check_token(token)
+        if user is None:
+            # Token is invalid, redirect to an error page or display a message
+            messages.error(request, 'Invalid activation link.')
+            return render(request, 'error_page.html')
+
+        # Token is valid, activate the user
         user.is_active = True
         user.save()
-        # Optionally, log in the user after activation
-        # login(request, user)
-        # Redirect to a success page
-        messages.success(request, 'Your account has been activated successfully.')
-        return redirect('login')  # Replace 'login' with the name of your login URL pattern
+
+        # Log the user in
+        # Delete the token from the session
+        del request.session['activation_token']
+
+        messages.success(request, 'Your account has been successfully activated. Please login.')
+        return render(request, 'activation_success.html')
+
     except Exception as e:
-        # Handle invalid or expired tokens
-        messages.error(request, 'Invalid or expired activation link.')
-        return redirect('login')  # Replace 'login' with the name
+        return render(request, 'activation_error.html')

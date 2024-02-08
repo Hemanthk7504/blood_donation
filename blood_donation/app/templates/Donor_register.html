@@ -261,87 +261,86 @@ emailError.textContent = '';
     </nav>
   </header>
   <main>
-    <section id="register">
+<!--    <section id="register">-->
       <div class="container">
         <h2>Register to Donate Blood</h2>
-<form action="{% url 'register' %}" method="post">
-      {% csrf_token %}
-          <div class="row">
-            <div class="col-md-6">
-              <label for="first_name">First Name</label>
-              <input type="text" name="first_name" id="first_name" required>
+        <form id="register" method="post">
+            {% csrf_token %}
+            <div class="row">
+                <div class="col-md-6">
+                    <label for="first_name">First Name</label>
+                    <input type="text" name="first_name" id="first_name" required>
+                </div>
+                <div class="col-md-6">
+                    <label for="last_name">Last Name</label>
+                    <input type="text" name="last_name" id="last_name" required>
+                </div>
             </div>
-            <div class="col-md-6">
-              <label for="last_name">Last Name</label>
-              <input type="text" name="last_name" id="last_name" required>
+            <div class="row">
+                <div class="col-md-6">
+                    <label for="email">Email Address</label>
+                    <input type="email" name="email" id="email" required pattern="^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$">
+                    <span id="email-error" class="error-message"></span>
+                </div>
+                <div class="col-md-6">
+                    <label for="phone">Phone Number</label>
+                    <input type="tel" name="phone" id="phone" required>
+                </div>
             </div>
-          </div>
-          <div class="row">
-            <div class="col-md-6">
-              <label for="email">Email Address</label>
-              <input type="email" name="email" id="email" required pattern="^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$">
-              <span id="email-error" class="error-message"></span>
-
+            <div class="row">
+                <div class="col-md-6">
+                    <label for="password">Password</label>
+                    <input type="password" name="password" id="password" required>
+                </div>
+                <div class="col-md-6">
+                    <label for="confirm_password">Confirm Password</label>
+                    <input type="password" name="confirm_password" id="confirm_password" required>
+                </div>
             </div>
-            <div class="col-md-6">
-              <label for="phone">Phone Number</label>
-              <input type="tel" name="phone" id="phone" required>
+            <div class="row">
+                <div class="col-md-6">
+                    <label for="blood_type">Blood Type</label>
+                    <select name="blood_type" id="blood_type" required>
+                        <option value="A+">A+</option>
+                        <option value="A-">A-</option>
+                        <option value="B+">B+</option>
+                        <option value="B-">B-</option>
+                        <option value="AB+">AB+</option>
+                        <option value="AB-">AB-</option>
+                        <option value="O+">O+</option>
+                        <option value="O-">O-</option>
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <label for="date_of_birth">Date of Birth</label>
+                    <input type="date" name="date_of_birth" id="date_of_birth" required>
+                </div>
             </div>
-          </div>
-          <div class="row">
-            <div class="col-md-6">
-              <label for="password">Password</label>
-              <input type="password" name="password" id="password" required>
+            <div class="row">
+                <div class="col-md-6">
+                    <label for="gender">Gender</label>
+                    <select name="gender" id="gender" required>
+                        <option value="male">Male</option>
+                        <option value="female">Female</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <label for="weight">Weight (kg)</label>
+                    <input type="number" name="weight" id="weight" required>
+                </div>
             </div>
-            <div class="col-md-6">
-              <label for="confirm_password">Confirm Password</label>
-              <input type="password" name="confirm_password" id="confirm_password" required>
+            <div class="row">
+                <div class="col-md-12">
+                    <label for="address">Address</label>
+                    <textarea name="address" id="address" required></textarea>
+                </div>
             </div>
-          </div>
-          <div class="row">
-            <div class="col-md-6">
-              <label for="blood_type">Blood Type</label>
-              <select name="blood_type" id="blood_type" required>
-                <option value="A+">A+</option>
-                <option value="A-">A-</option>
-                <option value="B+">B+</option>
-                <option value="B-">B-</option>
-                <option value="AB+">AB+</option>
-                <option value="AB-">AB-</option>
-                <option value="O+">O+</option>
-                <option value="O-">O-</option>
-              </select>
+            <div class="row">
+                <div class="col-md-12">
+                    <input type="submit" value="Register">
+                </div>
             </div>
-            <div class="col-md-6">
-              <label for="date_of_birth">Date of Birth</label>
-              <input type="date" name="date_of_birth" id="date_of_birth" required>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-md-6">
-              <label for="gender">Gender</label>
-              <select name="gender" id="gender" required>
-                <option value="male">Male</option>
-                <option value="female">Female</option>
-                <option value="other">Other</option>
-              </select>
-            </div>
-            <div class="col-md-6">
-              <label for="weight">Weight (kg)</label>
-              <input type="number" name="weight" id="weight" required>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-md-12">
-              <label for="address">Address</label>
-              <textarea name="address" id="address" required></textarea>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-md-12">
-              <input type="submit" value="Register">
-            </div>
-          </div>
         </form>
       </div>
     </section>
