@@ -15,7 +15,7 @@ class AdminType:
 
 
 @strawberry.type
-class Mutation:
+class Admin_Mutation:
     @strawberry.mutation
     def create_admin(self,
                      username: str, email: str, hospital_name: str, address: str,
@@ -38,7 +38,7 @@ class Mutation:
 
 
 @strawberry.type
-class Query:
+class Admin_Query:
     @strawberry.field
     def admin(self, username: str) -> AdminType:
         try:
@@ -56,4 +56,4 @@ class Query:
             return None
 
 
-schema = strawberry.Schema(query=Query, mutation=Mutation)
+admin_schema = strawberry.Schema(query=Admin_Query, mutation=Admin_Mutation)

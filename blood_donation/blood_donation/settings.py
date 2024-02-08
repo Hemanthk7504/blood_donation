@@ -1,3 +1,8 @@
+import environ
+
+# Load environment variables from .env file
+env = environ.Env()
+environ.Env.read_env()
 """
 Django settings for blood_donation project.
 
@@ -15,7 +20,6 @@ from pathlib import Path
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
@@ -26,7 +30,6 @@ SECRET_KEY = 'django-insecure-*#krapxi$q+^#=z=-)(_ktbl+%86b!ld-1tk3@m&2!o1$xhu^p
 DEBUG = True
 
 ALLOWED_HOSTS = []
-
 
 # Application definition
 
@@ -70,7 +73,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'blood_donation.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
@@ -81,10 +83,9 @@ DATABASES = {
         'USER': 'postgres',
         'PASSWORD': 'hemanth',
         'HOST': 'localhost',  # Or your PostgreSQL server's IP address
-        'PORT': '5432',       # Default PostgreSQL port
+        'PORT': '5432',  # Default PostgreSQL port
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
@@ -104,7 +105,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
 
@@ -115,7 +115,6 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 
 USE_TZ = True
-
 
 # Static js (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
@@ -132,3 +131,9 @@ CORS_ALLOWED_ORIGINS = [
     # Add other allowed origins if needed
 ]
 
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'hk265740@gmail.com'
+EMAIL_HOST_PASSWORD = 'ziowfzfxyhuymchh'
