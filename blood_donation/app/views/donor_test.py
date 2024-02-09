@@ -1,26 +1,21 @@
 import threading
 from venv import logger
-
-from django.contrib.sessions.backends.db import SessionStore
 import strawberry
-from django.core.checks import messages
 from django.db import transaction
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-from django.http import HttpResponse
 from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
 from strawberry.django.views import GraphQLView
 from django.shortcuts import render, redirect
 from django.contrib.auth.hashers import make_password
 from ..models.donor_model import DonorProfile
-import jws
-from uuid import uuid4, UUID
-from django.contrib.auth.tokens import PasswordResetTokenGenerator, default_token_generator
+from uuid import UUID
 from django.core.mail import send_mail, EmailMultiAlternatives
 from django.template.loader import render_to_string
 
 import logging
+import qrcode
 
 _request_data = threading.local()
 
@@ -46,6 +41,7 @@ class UserType:
     username: str
     email: str
     blood_type: str
+    two_fa_enabled: bool
 
 
 @strawberry.type
@@ -53,7 +49,7 @@ class Donor_Mutation:
     @strawberry.mutation
     def create_donor(self, username: str, password: str, confirm_password: str,
                      email: str, first_name: str, last_name: str, mobile: str, blood_type: str,
-                     dob: str, gender: str, weight: float, address: str
+                     dob: str, gender: str, weight: float, address: str, enable_two_fa: bool
                      ) -> UserType:
         if password != confirm_password:
             raise Exception('Passwords do not match')
@@ -79,8 +75,14 @@ class Donor_Mutation:
                 dob=dob,
                 gender=gender,
                 weight=weight,
-                address=address
+                address=address,
+                two_fa_enabled=enable_two_fa
             )
+
+            if enable_two_fa:
+                qr_code = qrcode.make(donor_profile.get_two_fa_secret_key())
+                donor_profile.two_fa_qr_code = qr_code
+                donor_profile.save()
 
             send_activation_email(instance=donor_profile, created=True)
 
@@ -88,7 +90,8 @@ class Donor_Mutation:
                 id=donor_profile.id,
                 username=donor_profile.username,
                 email=donor_profile.email,
-                blood_type=donor_profile.blood_type
+                blood_type=donor_profile.blood_type,
+                two_fa_enabled=donor_profile.two_fa_enabled
             )
 
         except Exception as e:
@@ -107,7 +110,8 @@ class Donor_Query:
                 id=donor.id,
                 username=donor.username,
                 email=donor.email,
-                blood_type=donor.blood_type
+                blood_type=donor.blood_type,
+                two_fa_enabled=donor.two_fa_enabled
             )
         except DonorProfile.DoesNotExist:
             return UserType(
@@ -134,22 +138,32 @@ def registration_view(request):
 def send_activation_email(instance, created, **kwargs):
     if created:
         donor_id = str(instance.id)
-        domain = '127.0.0.1:8000'
-        protocol = 'http'
+
+        domain = '127.0.0.1:8000'  # Replace with your actual domain
+        protocol = 'http'  # Replace with 'https' if you use SSL/TLS
         activation_url = reverse('activate', kwargs={'token': donor_id})
         activation_url = f'{protocol}://{domain}{activation_url}'
+
         subject = 'Activate Your Blood Donation Account'
         message = f"Dear {instance.first_name},\n\nThank you for registering!\n\nPlease click the link below to activate your account:\n\n{activation_url}\n\nBest regards,\nYour Blood Donation Team"
         from_email = 'hk265740@gmail.com'
         to_email = instance.email
+
+        # Render the HTML content from the template
         html_message = render_to_string('activation_email.html', {'activation_link': activation_url})
+
+        # Create an EmailMultiAlternatives object
         email = EmailMultiAlternatives(
             subject=subject,
             body=message,
             from_email=from_email,
             to=[to_email],
         )
+
+        # Attach the HTML content to the email
         email.attach_alternative(html_message, "text/html")
+
+        # Send the email
         email.send()
 
 
@@ -164,7 +178,8 @@ def activate(request, token):
         donor.is_active = True
         donor.save()
 
-        return redirect('login')
+        return redirect('login')  # Redirect to login page
+
     except DonorProfile.DoesNotExist:
         return render(request, 'activation_error.html')
 
