@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blood Donation</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background-color: #dc3545;
+            color: #fff;
+            padding: 20px;
+            text-align: center;
+        }
+
+        h1 {
+            margin-top: 0;
+            font-size: 2.5em;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .hero-image {
+            background-image: url('blood_donation.jpg');
+            background-size: cover;
+            background-position: center;
+            height: 500px;
+            position: relative;
+            text-align: center;
+            color: #fff;
+        }
+
+        .hero-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .hero-text h2 {
+            font-size: 3em;
+            margin: 0;
+        }
+
+        .hero-text p {
+            font-size: 1.5em;
+            margin-top: 20px;
+        }
+
+        .cta-button {
+            background-color: #dc3545;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            font-size: 1.2em;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .cta-button:hover {
+            background-color: #c82333;
+        }
+
+        footer {
+            background-color: #343a40;
+            color: #fff;
+            text-align: center;
+            padding: 20px 0;
+        }
+
+        .nav-links {
+            list-style: none;
+            padding: 0;
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .nav-links li {
+            display: inline;
+            margin: 0 10px;
+        }
+
+        .nav-links li a {
+            color: #fff;
+            text-decoration: none;
+            font-size: 1.2em;
+        }
+
+        .nav-links li a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Welcome to Blood Donation</h1>
+        <ul class="nav-links">
+            <li><a href="http://127.0.0.1:8000/login/">Login</a></li>
+            <li><a href="http://127.0.0.1:8000/Register/">Register</a></li>
+        </ul>
+    </header>
+
+    <div class="hero-image">
+        <div class="hero-text">
+            <h2>Donate Blood, Save Lives</h2>
+            <p>Your donation can make a difference. Join us today!</p>
+            <button class="cta-button" >Donate Now</button>
+        </div>
+    </div>
+
+    <div class="container">
+        <h2>Why Donate Blood?</h2>
+        <p>Blood donation helps save lives. It is a simple and safe process, and anyone in good health can donate blood.</p>
+        <p>Donated blood is used for various medical treatments, including surgeries, trauma care, and treating medical conditions.</p>
+        <p>By donating blood, you can contribute to the well-being of others and make a positive impact on your community.</p>
+    </div>
+
+    <footer>
+        <p>&copy; 2024 Blood Donation. All rights reserved.</p>
+    </footer>
+</body>
+</html>

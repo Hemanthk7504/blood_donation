@@ -34,10 +34,10 @@ def get_request():
 
 
 @csrf_exempt
-def register_donor(request):
-    set_request(request)
-    graphql_view = GraphQLView.as_view(schema=donor_schema)
-    return graphql_view(request)
+# def register_donor(request):
+#     set_request(request)
+#     graphql_view = GraphQLView.as_view(schema=donor_schema)
+#     return graphql_view(request)
 
 
 @strawberry.type
@@ -117,12 +117,12 @@ class Donor_Query:
             )
 
 
-donor_schema = strawberry.Schema(query=Donor_Query, mutation=Donor_Mutation)
+# donor_schema = strawberry.Schema(query=Donor_Query, mutation=Donor_Mutation)
 
 
-def graphql_request(request):
-    graphql_view = GraphQLView.as_view(schema=donor_schema)
-    return graphql_view(request)
+# def graphql_request(request):
+#     graphql_view = GraphQLView.as_view(schema=donor_schema)
+#     return graphql_view(request)
 
 
 def registration_view(request):
