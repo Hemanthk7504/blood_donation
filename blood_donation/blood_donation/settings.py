@@ -1,3 +1,5 @@
+import os
+
 import environ
 
 # Load environment variables from .env file
@@ -20,13 +22,8 @@ from pathlib import Path
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
-
-# SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-*#krapxi$q+^#=z=-)(_ktbl+%86b!ld-1tk3@m&2!o1$xhu^p'
 
-# SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
 ALLOWED_HOSTS = []
@@ -41,13 +38,16 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'app',
+    "graphene_django",
+    "graphql_jwt.refresh_token.apps.RefreshTokenConfig",
+    "django_filters",
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
-    # 'django.middleware.csrf.CsrfViewMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
@@ -57,18 +57,18 @@ ROOT_URLCONF = 'blood_donation.urls'
 
 TEMPLATES = [
     {
-        'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
-        'APP_DIRS': True,
-        'OPTIONS': {
-            'context_processors': [
-                'django.template.context_processors.debug',
-                'django.template.context_processors.request',
-                'django.contrib.auth.context_processors.auth',
-                'django.contrib.messages.context_processors.messages',
-            ],
+        "BACKEND": "django.template.backends.django.DjangoTemplates",
+        "DIRS": [os.path.join(BASE_DIR, "templates")],
+        "APP_DIRS": True,
+        "OPTIONS": {
+            "context_processors": [
+                "django.template.context_processors.debug",
+                "django.template.context_processors.request",
+                "django.contrib.auth.context_processors.auth",
+                "django.contrib.messages.context_processors.messages",
+            ]
         },
-    },
+    }
 ]
 
 WSGI_APPLICATION = 'blood_donation.wsgi.application'
@@ -78,12 +78,12 @@ WSGI_APPLICATION = 'blood_donation.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'hemanth',
-        'USER': 'postgres',
-        'PASSWORD': 'hemanth',
-        'HOST': 'localhost',  # Or your PostgreSQL server's IP address
-        'PORT': '5432',  # Default PostgreSQL port
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'blood',
+        'USER': 'root',
+        'PASSWORD': '1234',
+        'HOST': 'localhost',
+        'PORT': '3306',
     }
 }
 
@@ -104,6 +104,33 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
+
+GRAPHENE = {
+    "SCHEMA": "schema",
+    "MIDDLEWARE": ["graphql_jwt.middleware.JSONWebTokenMiddleware"],
+}
+
+AUTHENTICATION_BACKENDS = [
+    "app.backends.GraphQLAuthBackend",
+    "django.contrib.auth.backends.ModelBackend",
+]
+
+GRAPHQL_JWT = {
+    "JWT_VERIFY_EXPIRATION": True,
+    "JWT_LONG_RUNNING_REFRESH_TOKEN": True,
+    "JWT_ALLOW_ANY_CLASSES": [
+        "app.mutations.Register",
+        "app.mutations.VerifyAccount",
+        "app.mutations.ResendActivationEmail",
+        "app.mutations.SendPasswordResetEmail",
+        "app.mutations.PasswordReset",
+        "app.mutations.ObtainJSONWebToken",
+        "app.mutations.VerifyToken",
+        "app.mutations.RefreshToken",
+        "app.mutations.RevokeToken",
+        "app.mutations.VerifySecondaryEmail",
+    ],
+}
 
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
@@ -126,14 +153,15 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-CORS_ALLOWED_ORIGINS = [
-    "chrome-extension://flnheeellpciglgpaodhkhmapeljopja",
-    # Add other allowed origins if needed
-]
-
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'hk265740@gmail.com'
 EMAIL_HOST_PASSWORD = 'ziowfzfxyhuymchh'
+
+EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+
+GRAPHQL_AUTH = {
+    "EMAIL_ASYNC_TASK": "pseudo_async_email_support.pseudo_async_email_support"
+}

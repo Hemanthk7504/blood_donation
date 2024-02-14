@@ -1,5 +1,7 @@
 import strawberry
 from django.contrib.auth.hashers import make_password
+from strawberry.django.views import GraphQLView
+
 from ..models.admin_model import Admin
 
 
@@ -57,3 +59,8 @@ class Admin_Query:
 
 
 admin_schema = strawberry.Schema(query=Admin_Query, mutation=Admin_Mutation)
+
+
+def graphql_request(request):
+    graphql_view = GraphQLView.as_view(schema=admin_schema)
+    return graphql_view(request)

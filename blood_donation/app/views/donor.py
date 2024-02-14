@@ -13,6 +13,9 @@ from django.views.decorators.csrf import csrf_exempt
 from strawberry.django.views import GraphQLView
 from django.shortcuts import render, redirect
 from django.contrib.auth.hashers import make_password
+
+from .donor_login import AuthMutation
+from .ty import UserType
 from ..models.donor_model import DonorProfile
 import jws
 from uuid import uuid4, UUID
@@ -40,16 +43,12 @@ def get_request():
 #     return graphql_view(request)
 
 
-@strawberry.type
-class UserType:
-    id: UUID
-    username: str
-    email: str
-    blood_type: str
+
 
 
 @strawberry.type
 class Donor_Mutation:
+    auth: AuthMutation
     @strawberry.mutation
     def create_donor(self, username: str, password: str, confirm_password: str,
                      email: str, first_name: str, last_name: str, mobile: str, blood_type: str,
@@ -117,12 +116,12 @@ class Donor_Query:
             )
 
 
-# donor_schema = strawberry.Schema(query=Donor_Query, mutation=Donor_Mutation)
+donor_schema = strawberry.Schema(query=Donor_Query, mutation=Donor_Mutation)
 
 
-# def graphql_request(request):
-#     graphql_view = GraphQLView.as_view(schema=donor_schema)
-#     return graphql_view(request)
+def graphql_request(request):
+    graphql_view = GraphQLView.as_view(schema=donor_schema)
+    return graphql_view(request)
 
 
 def registration_view(request):
