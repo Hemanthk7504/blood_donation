@@ -1,9 +1,46 @@
-<h3>{{ site_name }}</h3>
-
-<p>Hello {{ user.username }}!</p>
-
-<p>Please activate your account on the link:</p>
-
-<p>{{ protocol }}://{{ domain }}/{{ url }}/{{ token }}</p>
-
-<p>WORKED!</p>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ site_name }}</title>
+  <style>
+    .container {
+      width: 80%;
+      margin: 0 auto;
+      text-align: center;
+    }
+    .box {
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+    .button {
+      background-color: #4CAF50;
+      border: none;
+      color: white;
+      padding: 15px 32px;
+      text-align: center;
+      text-decoration: none;
+      display: inline-block;
+      font-size: 16px;
+      margin: 4px 2px;
+      cursor: pointer;
+      border-radius: 12px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="box">
+      <h2>Activate Your Account</h2>
+      <p>Hello {{ user.username }},</p>
+      <p>We're excited to have you join us!</p>
+      <p>To get started, please activate your account:</p>
+      <a href="http://127.0.0.1:8000/graphql?query=mutation{ verifyAccount(token: '{{ token }}') { success errors }}" class="button">Verify Account</a>
+      <p>If you have any questions or concerns, feel free to reach out.</p>
+      <p>Thank you!</p>
+    </div>
+  </div>
+</body>
+</html>

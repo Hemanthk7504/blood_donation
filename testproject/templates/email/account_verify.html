@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Email Verification</title>
+  <style>
+    .container {
+      width: 80%;
+      margin: 0 auto;
+      text-align: center;
+    }
+    .success-message {
+      color: #4CAF50;
+      font-size: 24px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="success-message" id="successMessage">Verifying your account...</div>
+  </div>
+
+  <script>
+    // Extract token from the URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const token = urlParams.get('token');
+
+    // Make a request to the backend mutation
+    fetch(`http://127.0.0.1:8000/verify-account?token=${token}`)
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          // If verification is successful, display success message
+          document.getElementById('successMessage').innerText = 'Your account is successfully activated!';
+
+          // Redirect to the login page after a brief delay (adjust the time as needed)
+          setTimeout(() => {
+            window.location.href = 'http://your-login-page';
+          }, 3000);
+        } else {
+          // If verification fails, display an error message
+          document.getElementById('successMessage').innerText = 'Account activation failed. Please contact support.';
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        document.getElementById('successMessage').innerText = 'An error occurred. Please try again later.';
+      });
+  </script>
+</body>
+</html>
